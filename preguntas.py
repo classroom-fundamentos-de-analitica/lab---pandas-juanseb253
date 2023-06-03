@@ -242,7 +242,35 @@ def pregunta_12():
     38   38                    eee:0,fff:9,iii:2
     39   39                    ggg:3,hhh:8,jjj:5
     """
-    return
+    x = [i for i in tbl2['_c5a']]
+    y = [i for i in tbl2['_c5b']]
+    z = [i for i in tbl2['_c0']]
+    a = [[z[i],x[i],y[i]] for i in range(len(x))]
+    a.sort(key= lambda x: x[1])
+    dic = dict()
+    for i in a:
+        if i[0] not in dic:
+            dic[i[0]] = [f"{i[1]}:{i[2]}"]
+        else:
+            dic[i[0]].append(f"{i[1]}:{i[2]}")
+    for i in dic.keys():
+        dic[i] = ','.join(dic[i])
+    val = list(dic.values())
+    key = list(dic.keys())
+    w = []
+    for i in range(len(val)):
+        w.append([key[i],val[i]])
+    w.sort()
+    r = []
+    q = []
+    for i in w:
+        r.append(i[0])
+        q.append(i[1])
+    rp = pd.DataFrame({
+        '_c0': r,
+        '_c5':q
+    })
+    return rp
 
 
 def pregunta_13():
