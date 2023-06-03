@@ -22,7 +22,8 @@ def pregunta_01():
     40
 
     """
-    return
+    x = tbl0.shape[0]
+    return x
 
 
 def pregunta_02():
@@ -33,7 +34,7 @@ def pregunta_02():
     4
 
     """
-    return
+    return tbl0.shape[1]
 
 
 def pregunta_03():
@@ -50,7 +51,7 @@ def pregunta_03():
     Name: _c1, dtype: int64
 
     """
-    return
+    return tbl0.groupby("_c1")['_c1'].count()
 
 
 def pregunta_04():
@@ -65,7 +66,7 @@ def pregunta_04():
     E    4.785714
     Name: _c2, dtype: float64
     """
-    return
+    return tbl0.groupby("_c1")['_c2'].mean()
 
 
 def pregunta_05():
@@ -82,7 +83,7 @@ def pregunta_05():
     E    9
     Name: _c2, dtype: int64
     """
-    return
+    return tbl0.groupby("_c1")['_c2'].max()
 
 
 def pregunta_06():
@@ -94,7 +95,10 @@ def pregunta_06():
     ['A', 'B', 'C', 'D', 'E', 'F', 'G']
 
     """
-    return
+    x = list(set(tbl1['_c4'].values))
+    x = [i.upper() for i in x]
+    x.sort()
+    return x
 
 
 def pregunta_07():
@@ -110,7 +114,7 @@ def pregunta_07():
     E    67
     Name: _c2, dtype: int64
     """
-    return
+    return tbl0.groupby('_c1')['_c2'].sum()
 
 
 def pregunta_08():
@@ -128,7 +132,8 @@ def pregunta_08():
     39   39   E    5  1998-01-26    44
 
     """
-    return
+    tbl0['suma'] = tbl0['_c0'] + tbl0['_c2']
+    return tbl0
 
 
 def pregunta_09():
@@ -146,7 +151,8 @@ def pregunta_09():
     39   39   E    5  1998-01-26  1998
 
     """
-    return
+    tbl0['year'] = [i.split('-')[0] for i in tbl0['_c3']]
+    return tbl0
 
 
 def pregunta_10():
@@ -163,7 +169,26 @@ def pregunta_10():
     3   D                  1:2:3:5:5:7
     4   E  1:1:2:3:3:4:5:5:5:6:7:8:8:9
     """
-    return
+    lista = []
+    for i in tbl0.groupby("_c1")['_c2']:
+        x = ""
+        for j in i:
+            w = list(j)
+            w.sort()
+            for e in range(len(j)):
+                if w[e] != 'A' and w[e] != 'B' and w[e] != 'C' and w[e] != 'D' and w[e] != 'E':
+                    if e == len(j)-1:
+                        x += str(w[e])
+                    else:
+                        x += str(w[e]) + ':'
+            if x != '':
+                lista.append(x)
+    fin = tbl0.groupby('_c1').count()
+    fin.pop('_c2')
+    fin.pop('_c0')
+    fin.pop('_c3')
+    fin['_c2'] = lista
+    return fin
 
 
 def pregunta_11():
@@ -182,7 +207,24 @@ def pregunta_11():
     38   38      d,e
     39   39    a,d,f
     """
-    return
+    x = [i for i in tbl1['_c4']]
+    y = [i for i in tbl1['_c0']]
+    dic = dict()
+    for i in range(len(x)):
+        if y[i] not in dic:
+            dic[y[i]] = [x[i]]
+        else:
+            dic[y[i]].append(x[i])
+    for i in dic.keys():
+        dic[i].sort()
+        dic[i] = ','.join(dic[i])
+    val = list(dic.values())
+    key = list(dic.keys())
+    rp = pd.DataFrame({
+        '_c0': key,
+        '_c4':val
+    })
+    return rp
 
 
 def pregunta_12():
@@ -200,7 +242,35 @@ def pregunta_12():
     38   38                    eee:0,fff:9,iii:2
     39   39                    ggg:3,hhh:8,jjj:5
     """
-    return
+    x = [i for i in tbl2['_c5a']]
+    y = [i for i in tbl2['_c5b']]
+    z = [i for i in tbl2['_c0']]
+    a = [[z[i],x[i],y[i]] for i in range(len(x))]
+    a.sort(key= lambda x: x[1])
+    dic = dict()
+    for i in a:
+        if i[0] not in dic:
+            dic[i[0]] = [f"{i[1]}:{i[2]}"]
+        else:
+            dic[i[0]].append(f"{i[1]}:{i[2]}")
+    for i in dic.keys():
+        dic[i] = ','.join(dic[i])
+    val = list(dic.values())
+    key = list(dic.keys())
+    w = []
+    for i in range(len(val)):
+        w.append([key[i],val[i]])
+    w.sort()
+    r = []
+    q = []
+    for i in w:
+        r.append(i[0])
+        q.append(i[1])
+    rp = pd.DataFrame({
+        '_c0': r,
+        '_c5':q
+    })
+    return rp
 
 
 def pregunta_13():
@@ -217,4 +287,6 @@ def pregunta_13():
     E    275
     Name: _c5b, dtype: int64
     """
-    return
+    tabla = pd.merge(tbl0, tbl2, on = '_c0')
+    tabla2 = tabla.groupby('_c1')['_c5b'].sum()
+    return tabla2
