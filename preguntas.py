@@ -287,35 +287,6 @@ def pregunta_13():
     E    275
     Name: _c5b, dtype: int64
     """
-    c00 = [i for i in tbl0['_c0']]
-    c1 = [i for i in tbl0['_c1']]
-    c02 = [i for i in tbl2['_c0']]
-    c5 = [i for i in tbl2['_c5b']]
-    dic = dict()
-    for i in range(len(c5)):
-        if c02[i] not in dic:
-            dic[c02[i]] = int(c5[i])
-        else:
-            dic[c02[i]] += int(c5[i])
-    dicfin = dict()
-    for i in range(len(c1)):
-        if c1[i] not in dicfin:
-            dicfin[c1[i]] = dic[c00[i]]
-        else:
-            dicfin[c1[i]] += dic[c00[i]]
-    val = list(dicfin.values())
-    key = list(dicfin.keys())
-    w = []
-    for i in range(len(val)):
-        w.append([key[i],val[i]])
-    w.sort()
-    r = []
-    q = []
-    for i in w:
-        r.append(i[0])
-        q.append(i[1])
-    rp = pd.DataFrame({
-        '_c1': r,
-        '':q
-    })
-    return rp
+    tabla = pd.merge(tbl0, tbl2, on = '_c0')
+    tabla2 = tabla.groupby('_c1')['_c5b'].sum()
+    return tabla2
